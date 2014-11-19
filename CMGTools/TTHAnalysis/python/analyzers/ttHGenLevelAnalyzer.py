@@ -229,6 +229,8 @@ class ttHGenLevelAnalyzer( Analyzer ):
         else:
             event.genBin = -999
 
+        event.genQScale = self.mchandles['pdfstuff'].product().qScale()
+
     def process(self, iEvent, event):
         self.readCollections( iEvent )
 

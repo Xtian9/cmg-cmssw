@@ -20,7 +20,8 @@ puRegime = 'PU40bx50'
 #cutFlow = 'SinglePhoton'
 #cutFlow = 'SingleEle'
 #cutFlow = 'DoubleEle'
-cutFlow = 'MultiJetEnriched'
+#cutFlow = 'MultiJetEnriched'
+cutFlow = 'Inclusive' # Used for validation purposes, very minimal cuts
 # cutFlow = 'Test'
 
 if cutFlow=='SingleMu':
@@ -52,7 +53,7 @@ elif cutFlow=='SinglePhoton':
     ttHPhotonSkim.maxObjects  = 1 
     ttHAlphaTSkim.alphaTCuts = [(0.55, 375,99999 )]   
     ttHAlphaTControlSkim.photonDeltaRCut = 1.0
-    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','met',9999) #MHT/MET cut
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','met',9999) #turn off MHT/MET cut
 
 elif cutFlow=='SingleEle':
     ttHElectronSkim.minObjects  = 1
@@ -66,6 +67,21 @@ elif cutFlow=='DoubleEle':
 
 elif cutFlow=='MultiJetEnriched':
     ttHAlphaTSkim.invertAlphaT = True
+
+elif cutFlow=='Inclusive':
+    ttHJetMETSkim.jetPtCuts   = [0] # require the lead two jets to be above 100GeV
+    ttHJetMETSkim.htCut       = ('htJet50j', -1000)
+    ttHJetMETSkim.mhtCut      = ('mhtJet50j', -1000)
+    ttHElectronSkim.minObjects  = 0 
+    ttHElectronSkim.maxObjects  = 9999
+    ttHMuonSkim.minObjects  = 0
+    ttHMuonSkim.maxObjects  = 9999
+    ttHPhotonSkim.minObjects  = 0
+    ttHPhotonSkim.maxObjects  = 9999 
+    ttHIsoTrackSkim.minObjects = 0
+    ttHIsoTrackSkim.maxObjects = 9999
+    ttHAlphaTSkim.alphaTCuts = [(0.0, -1000,99999 )]   #Turn off AlphaT cut
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','met',9999) #turn off MHT/MET cut
 
 elif cutFlow=='Test':
     ttHMuonSkim.maxObjects     = 99
@@ -134,7 +150,14 @@ elif cutFlow == 'MultiJetEnriched':
     if puRegime == 'PU40bx50':
         selectedComponents = QCD
     elif puRegime == 'PU20bx25':
-        selectedComponents = 'None' 
+        selectedComponents = []
+
+elif cutFlow == 'Inclusive':
+    if puRegime == 'PU40bx50':
+        selectedComponents = WJetsToLNu + ZJetsToNuNu + TTbar + SusySignalSamples + QCD + GJets + DYJetsToLL
+    elif puRegime == 'PU20bx25':
+        selectedComponents = WJetsToLNu_PU20bx25 + TTbar_PU20bx25 + SusySignalSamples_PU20bx25 + DYJetsToLL_PU20bx25 + GJets_PU20bx25 
+
 
 else:
     print 'Please choose correct cutFlow and PU regime'
@@ -158,17 +181,27 @@ sequence = cfg.Sequence(susyCoreSequence + [
 
 
 #-------- HOW TO RUN
+# test = 0 for batch submission
+# test = n != 0 for interactive mucking about
+
 test = 0
+limitFiles = True #Choose to run over limited number of files for each sample
+
+if limitFiles:
+    for comp in selectedComponents:
+        comp.splitFactor = 2
+        comp.files = comp.files[:2]
 
 # Test a single component, using a single thread.
 #--------------------------------------------------
 if test==1:
     #comp               = SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170
-    comp = QCD_Pt1000to1400_PU_S14_POSTLS170
+    #comp = DYJetsM50_HT200to400_PU_S14_POSTLS170
+    comp = ZJetsToNuNu_HT200to400_PU_S14_POSTLS170
     if cutFlow == 'SinglePhoton':
         comp = GJets_HT600toInf_PU_S14_POSTLS170  
     #comp.files = ['/afs/cern.ch/work/p/pandolf/CMSSW_7_0_6_patch1_2/src/CMGTools/TTHAnalysis/cfg/pickevents.root']
-    comp.files         = comp.files[:2]
+    comp.files         = comp.files[:1]
     
     selectedComponents = [comp]
     comp.splitFactor   = 1
