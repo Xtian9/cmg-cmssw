@@ -16,6 +16,7 @@ class treeProducerSusyAlphaT( treeProducerSusyCore ):
 
             #Gen level 
             NTupleVariable("genBin", lambda ev : ev.genBin, help="Generator level binning quantity"),
+            NTupleVariable("genQScale", lambda ev : ev.genQScale, help="Generator level binning quantity, QScale"),
 
             # Energy sums
             #----------------------------------------
