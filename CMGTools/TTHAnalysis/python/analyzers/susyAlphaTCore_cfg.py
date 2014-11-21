@@ -34,7 +34,8 @@ ttHLepAna.ele_tightId                 = "Cuts_2012"
 #------------------------------
 ttHPhoAna.ptMin                       = 25
 ttHPhoAna.etaMax                      = 2.5
-ttHPhoAna.gammaID                     = "PhotonCutBasedIDLoose"
+#ttHPhoAna.gammaID                     = "PhotonCutBasedIDLoose"
+ttHPhoAna.gammaID                     = "PhotonCutBasedIDTight"
 
 # Taus 
 #------------------------------
@@ -55,6 +56,12 @@ ttHJetAna.jetPt           = 50.
 ttHJetAna.recalibrateJets = False
 ttHJetAna.jetLepDR        = 0.4
 ttHJetMCAna.smearJets     = False
+
+#Sums
+#-------------------------------
+#Make the met without muons
+ttHMetAna.doMetNoMu = True
+
 
 ##------------------------------------------
 ##  ISOLATED TRACK
@@ -173,9 +180,3 @@ ttHAlphaTControlSkim = cfg.Analyzer(
             lepDeltaRCut = 0,
             photonDeltaRCut = 0,
             )
-
-ttHAlphaTMetNoMu = cfg.Analyzer(
-            'ttHAlphaTMetAnalyzer',
-            )
-
-
