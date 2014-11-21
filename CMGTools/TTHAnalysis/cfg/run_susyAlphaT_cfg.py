@@ -1,27 +1,17 @@
 import CMGTools.RootTools.fwlite.Config as cfg
-from CMGTools.RootTools.fwlite.Config import printComps
 from CMGTools.RootTools.RootTools import *
+from CMGTools.RootTools.fwlite.Config import printComps
 
 #Load all analyzers with defaults for alphaT analysis
 from CMGTools.TTHAnalysis.analyzers.susyAlphaTCore_cfg import *
+from CMGTools.TTHAnalysis.config.config_cfi import alphaTPSet
+import sys
 
-##------------------------------------------
-## Choose the type of cut flow
-## Signal or control sample
-##------------------------------------------
+puRegime = alphaTPSet.puRegime
+cutFlow = alphaTPSet.cutFlow
+test = alphaTPSet.test
 
-#PU regime
-puRegime = 'PU40bx50'
-#puRegime = 'PU20bx25'
-
-#cutFlow = 'Signal'
-#cutFlow = 'SingleMu'
-#cutFlow = 'DoubleMu'
-#cutFlow = 'SinglePhoton'
-#cutFlow = 'SingleEle'
-#cutFlow = 'DoubleEle'
-cutFlow = 'MultiJetEnriched'
-# cutFlow = 'Test'
+#Run config
 
 if cutFlow=='SingleMu':
     ttHLepAna.loose_muon_pt   = 30.
@@ -100,8 +90,11 @@ treeProducer = cfg.Analyzer(
             }
         )
 
-#-------- SAMPLES AND TRIGGERS -----------
-# from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import *
+    #-------- SAMPLES AND TRIGGERS -----------
+    # from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import *
+
+#if __name__ is not "run_susyAlphaT_cfg": 
+     #If running pybatch make sure naming isn't messed up by config
 from CMGTools.TTHAnalysis.samples.samples_13TeV_AlphaT import *
 
 selectedComponents = []
@@ -158,8 +151,6 @@ sequence = cfg.Sequence(susyCoreSequence + [
 
 
 #-------- HOW TO RUN
-test = 0
-
 # Test a single component, using a single thread.
 #--------------------------------------------------
 if test==1:
@@ -197,10 +188,13 @@ elif test==4:
     selectedComponents = [comp]
     comp.splitFactor = 1
 #--------------------------------------------------
-    
 
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence )
+
+if __name__ == "pycfg":
+    if not test == alphaTPSet.test or not cutFlow == alphaTPSet.cutFlow or not puRegime == alphaTPSet.puRegime:
+        sys.exit("Stop fannying about with variable names")
 
 printComps(config.components, True)
 
