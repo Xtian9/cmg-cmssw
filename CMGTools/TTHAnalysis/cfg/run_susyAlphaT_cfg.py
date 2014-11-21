@@ -161,7 +161,6 @@ sequence = cfg.Sequence(susyCoreSequence + [
                         ttHElectronSkim,
                         ttHIsoTrackAna,
                         ttHIsoTrackSkim,
-                        ttHAlphaTMetNoMu,
                         ttHAlphaTAna,
                         ttHAlphaTControlAna,
                         ttHAlphaTSkim,
@@ -174,8 +173,6 @@ sequence = cfg.Sequence(susyCoreSequence + [
 # test = 0 for batch submission
 # test = n != 0 for interactive mucking about
 
-limitFiles = True #Choose to run over limited number of files for each sample
-
 if alphaTPSet.limitFiles:
     for comp in selectedComponents:
         comp.splitFactor = 2
@@ -186,7 +183,8 @@ if alphaTPSet.limitFiles:
 if test==1:
     #comp               = SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170
     #comp = DYJetsM50_HT200to400_PU_S14_POSTLS170
-    comp = ZJetsToNuNu_HT200to400_PU_S14_POSTLS170
+    #comp = ZJetsToNuNu_HT200to400_PU_S14_POSTLS170
+    comp = WJetsToLNu_HT400to600_PU_S14_POSTLS170
     if cutFlow == 'SinglePhoton':
         comp = GJets_HT600toInf_PU_S14_POSTLS170  
     #comp.files = ['/afs/cern.ch/work/p/pandolf/CMSSW_7_0_6_patch1_2/src/CMGTools/TTHAnalysis/cfg/pickevents.root']
