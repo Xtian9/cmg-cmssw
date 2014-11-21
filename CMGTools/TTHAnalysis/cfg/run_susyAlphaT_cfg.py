@@ -176,7 +176,7 @@ sequence = cfg.Sequence(susyCoreSequence + [
 
 limitFiles = True #Choose to run over limited number of files for each sample
 
-if AlphaTPSet.limitFiles:
+if alphaTPSet.limitFiles:
     for comp in selectedComponents:
         comp.splitFactor = 2
         comp.files = comp.files[:2]
