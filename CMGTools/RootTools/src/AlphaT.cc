@@ -4,7 +4,7 @@
 #include <numeric>
 #include <vector>
 
-
+//FIXME : threshold? 
 double AlphaT::getAlphaT( const std::vector<double>& et,
 			  const std::vector<double>& px,
 			  const std::vector<double>& py ){

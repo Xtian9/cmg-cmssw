@@ -1,104 +1,86 @@
 import CMGTools.RootTools.fwlite.Config as cfg
-from CMGTools.RootTools.fwlite.Config import printComps
 from CMGTools.RootTools.RootTools import *
+from CMGTools.RootTools.fwlite.Config import printComps
 
-#Load all analyzers
-from CMGTools.TTHAnalysis.analyzers.susyCore_modules_cff import *
+#Load all analyzers with defaults for alphaT analysis
+from CMGTools.TTHAnalysis.analyzers.susyAlphaTCore_cfg import *
+from CMGTools.TTHAnalysis.config.config_cfi import alphaTPSet
+import sys
 
-##------------------------------------------
-## Redefine analyzer parameters
-##------------------------------------------
+puRegime = alphaTPSet.puRegime
+cutFlow = alphaTPSet.cutFlow
+test = alphaTPSet.test
 
-# Muons
-#------------------------------
-ttHLepAna.loose_muon_pt               = 10.,
-ttHLepAna.loose_muon_eta              = 2.5,
-ttHLepAna.loose_muon_dxy              = 0.5
-ttHLepAna.loose_muon_dz               = 1.0
-#ttHLepAna.loose_muon_relIso           = 0.15
+if cutFlow=='SingleMu':
+    ttHLepAna.loose_muon_pt   = 30.
+    ttHLepAna.loose_muon_eta  = 2.1
+    ttHMuonSkim.minObjects  = 1
+    ttHMuonSkim.maxObjects  = 1
+    ttHIsoTrackSkim.allowedMuon  = 1 #
+    ttHAlphaTSkim.alphaTCuts = [(0.0, 200,99999 )]   #Turn off AlphaT cut 
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','metNoMu',1.25)
+    ttHAlphaTControlSkim.mtwCut = (30,125)
+    ttHAlphaTControlSkim.lepDeltaRCut = 0.5
 
-# Electrons
-#------------------------------
-ttHLepAna.loose_electron_id           = "POG_Cuts_ID_2012_Veto"
-ttHLepAna.loose_electron_pt           = 10
-ttHLepAna.loose_electron_eta          = 2.5
-ttHLepAna.loose_electron_dxy          = 0.5
-ttHLepAna.loose_electron_dz           = 0.
-# ttHLepAna.loose_electron_relIso       = 0.15
-# ttHLepAna.loose_electron_lostHits     = 999 # no cut
-# ttHLepAna.inclusive_electron_lostHits = 999 # no cut
-# ttHLepAna.ele_isoCorr                 = "deltaBeta"
-# ttHLepAna.ele_tightId                 = "Cuts_2012"
+elif cutFlow=='DoubleMu':
+    ttHLepAna.loose_muon_pt   = 30.
+    ttHLepAna.loose_muon_eta  = 2.1
+    ttHMuonSkim.minObjects  = 2
+    ttHMuonSkim.maxObjects  = 2
+    ttHIsoTrackSkim.allowedMuon  = 2 #
+    ttHAlphaTSkim.alphaTCuts = [(0.0, 200,99999 )]   #Turn off AlphaT cut
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','metNoMu',1.25)
+    ttHAlphaTControlSkim.mllCut = (66.2,116.2)
+    ttHAlphaTControlSkim.lepDeltaRCut = 0.5
 
-# Photons
-#------------------------------
-ttHPhoAna.ptMin                        = 25,
-ttHPhoAna.epaMax                       = 2.5,
+elif cutFlow=='SinglePhoton':
+    ttHPhoAna.ptMin = 165
+    ttHPhoAna.etaMax = 1.45
+    ttHPhotonSkim.minObjects  = 1
+    ttHPhotonSkim.maxObjects  = 1 
+    ttHAlphaTSkim.alphaTCuts = [(0.55, 375,99999 )]   
+    ttHAlphaTControlSkim.photonDeltaRCut = 1.0
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','met',9999) #turn off MHT/MET cut
 
-# Taus 
-#------------------------------
-ttHTauAna.etaMax         = 2.3
-ttHTauAna.dxyMax         = 99999.
-ttHTauAna.dzMax          = 99999.
-ttHTauAna.vetoLeptons    = False
-ttHTauAna.vetoLeptonsPOG = True
+elif cutFlow=='SingleEle':
+    ttHElectronSkim.minObjects  = 1
+    ttHElectronSkim.maxObjects  = 1
+    ttHIsoTrackSkim.allowedElectron  = 1 #
 
+elif cutFlow=='DoubleEle':
+    ttHElectronSkim.minObjects  = 2
+    ttHElectronSkim.maxObjects  = 2
+    ttHIsoTrackSkim.allowedElectron  = 2 #
 
-# Jets (for event variables do apply the jetID and not PUID yet)
-#------------------------------
-ttHJetAna.relaxJetId      = False
-ttHJetAna.doPuId          = False
-ttHJetAna.jetEta          = 5.
-ttHJetAna.jetEtaCentral   = 3.
-ttHJetAna.jetPt           = 50.
-ttHJetAna.recalibrateJets = False
-ttHJetAna.jetLepDR        = 0.4
-ttHJetMCAna.smearJets     = False
+elif cutFlow=='MultiJetEnriched':
+    ttHAlphaTSkim.invertAlphaT = True
 
+elif cutFlow=='Inclusive':
+    ttHJetMETSkim.jetPtCuts   = [0] # require the lead two jets to be above 100GeV
+    ttHJetMETSkim.htCut       = ('htJet50j', -1000)
+    ttHJetMETSkim.mhtCut      = ('mhtJet50j', -1000)
+    ttHElectronSkim.minObjects  = 0 
+    ttHElectronSkim.maxObjects  = 9999
+    ttHMuonSkim.minObjects  = 0
+    ttHMuonSkim.maxObjects  = 9999
+    ttHPhotonSkim.minObjects  = 0
+    ttHPhotonSkim.maxObjects  = 9999 
+    ttHIsoTrackSkim.minObjects = 0
+    ttHIsoTrackSkim.maxObjects = 9999
+    ttHAlphaTSkim.alphaTCuts = [(0.0, -1000,99999 )]   #Turn off AlphaT cut
+    ttHAlphaTSkim.mhtDivMetCut = ('mhtJet50j','met',9999) #turn off MHT/MET cut
 
-# Energy sums
-#------------------------------
-# NOTE: Currently energy sums are calculated with 40 GeV jets (ttHCoreEventAnalyzer.py)
-#       However, the input collection is cleanjets which have a 50 GeV cut so this is a labeling problem
-
-ttHJetMETSkim.htCut       = ('htJet50j', 0)
-ttHJetMETSkim.mhtCut      = ('htJet40j', 0)
-ttHJetMETSkim.nBJet       = ('CSVM', 0, "jet.pt() > 50")     # require at least 0 jets passing CSVM and pt > 50
-
-##------------------------------------------
-##  ISOLATED TRACK
-##------------------------------------------
-
-# those are the cuts for the nonEMu
-ttHIsoTrackAna = cfg.Analyzer(
-            'ttHIsoTrackAnalyzer',
-#            candidates='cmgCandidates',
-#            candidatesTypes='std::vector<cmg::Candidate>',
-            candidates      ='packedPFCandidates',
-            candidatesTypes ='std::vector<pat::PackedCandidate>',
-            ptMin           = 5, ### for pion 
-            ptMinEMU        = 5, ### for EMU
-            dzMax           = 0.1,
-            #####
-            isoDR           = 0.3,
-            ptPartMin       = 0,
-            dzPartMax       = 0.1,
-            maxAbsIso       = 8,
-            #####
-            MaxIsoSum       = 0.1, ### unused
-            MaxIsoSumEMU    = 0.2, ### unused
-            doSecondVeto    = False
-            )
-
-
-##------------------------------------------
-##  ALPHAT VARIABLES
-##------------------------------------------
-
-# Tree Producer
-ttHAlphaTAna = cfg.Analyzer(
-            'ttHAlphaTVarAnalyzer'
-            )
+elif cutFlow=='Test':
+    ttHMuonSkim.maxObjects     = 99
+    ttHMuonSkim.minObjects     = 0
+    ttHElectronSkim.maxObjects     = 99
+    ttHElectronSkim.minObjects     = 0
+    ttHAlphaTSkim.invertAlphaT = True
+    ttHPhotonSkim.minPhotons  = 0
+    ttHPhotonSkim.maxPhotons  = 9999
+    ttHPhotonSkim.ptCuts = [25]
+    ttHIsoTrackSkim.minObjects  = 0 # 
+    ttHIsoTrackSkim.maxObjects  = 9999 #
 
 ##------------------------------------------
 ##  PRODUCER
@@ -121,60 +103,92 @@ treeProducer = cfg.Analyzer(
             }
         )
 
-#-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import *
+    #-------- SAMPLES AND TRIGGERS -----------
+    # from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import *
 
-# CSA13 PU20bx25 samples: DYJetsM50_PU20bx25, DYJetsM50pythia6_PU20bx25, DYJetsM50_HT200to400_PU20bx25, DYJetsM50_HT400to600_PU20bx25, DYJetsM50_HT600toInf_PU20bx25, DYJetsMuMuM50_PtZ180_PU20bx25, DYJetsMuMuM6pythia8_PU20bx25, DYJetsMuMuM15pythia8_PU20bx25, DYJetsMuMuM50pythia8_PU20bx25, DYJetsEEpythia8_PU20bx25, DYJetsMuMupythia8_PU20bx25, EWKWmin_PU20bx25, EWKWplus_PU20bx25, EWKZjj_PU20bx25, EleGun_PU20bx25, GGHTauTau_PU20bx25, GGHZZ4L_PU20bx25, GJet_PU20bx25, JPsiPt20_PU20bx25, JPsiPt7_PU20bx25, MinBias_PU20bx25, MuMinGunPt100_PU20bx25, MuMinGunPt10_PU20bx25, MuPlusGunPt100_PU20bx25, MuPlusGunPt10_PU20bx25, NeutrinoGun_PU20bx25, QCDEM_20to30_PU20bx25, QCDEM_30to80_PU20bx25, QCDEM_80to170_PU20bx25, QCDMu_20to30_PU20bx25, QCDMu_30to50_PU20bx25, QCDMu_50to80_PU20bx25, QCDMu_80to120_PU20bx25, QCDMu_pythia6_120to170_PU20bx25, QCDMu_pythia6_20to30_PU20bx25, QCDMu_pythia6_30to50_PU20bx25, QCDMu_pythia6_50to80_PU20bx25, QCDMu_pythia6_80to120_PU20bx25, T1tttt_PU20bx25, TTHBB_PU20bx25, TTHGG_PU20bx25, TTHTauTau_PU20bx25, TTHWW_PU20bx25, TTHZZ4L_PU20bx25, TTJets_PU20bx25, TTJets_PUS14, TTpythia8_PU20bx25, VBFHBB_PU20bx25, VBFHGG_PU20bx25, VBFHWWSemi_PU20bx25, VBFHWW_PU20bx25, VBFHZG_PU20bx25, VBFHZZ4L_PU20bx25, VHMuMu_PU20bx25, VHTauTau_PU20bx25, VHWWInc_PU20bx25, VHWWLep_PU20bx25, VHZZ4L_PU20bx25, WENupyhia8_PU20bx25, WJets_PU20bx25, WminTau_PU20bx25, WplusMu_PU20bx25, WplusTau_PU20bx25, ZHBBInv_PU20bx25, ZHBBLL_PU20bx25, ZHLLInv_PU20bx25
+#if __name__ is not "run_susyAlphaT_cfg": 
+     #If running pybatch make sure naming isn't messed up by config
+from CMGTools.TTHAnalysis.samples.samples_13TeV_AlphaT import *
 
-
-
-# Selected samples as defined on the AlphaT twiki
-WJetsToLNu   = [ WJetsToLNu_HT100to200_PU_S14_POSTLS170, WJetsToLNu_HT200to400_PU_S14_POSTLS170, WJetsToLNu_HT400to600_PU_S14_POSTLS170, WJetsToLNu_HT600toInf_PU_S14_POSTLS170]
-
-# Currently not defined in the samples file could be added from here: https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2F*DYJetsToLL*13TeV*%2F*PU20bx25*%2F*AODSIM
-#DYJetsToLL  = []
-# Currently not defined in the samples file could be added from here: https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2F*ZJetsToNuNu*13TeV*%2F*PU20bx25*%2F*AODSIM
-#ZJetsToNuNu = []
-# https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2F*GJets*13TeV*%2F*PU20bx25*%2F*AODSIM
-#GJets       = []
-
-# NOT INCLUDING: /TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/Spring14miniaod-PU20bx25_POSTLS170_V5-v2/MINIAODSIM
-TTbar        = [ TTpythia8_PU20bx25 ]
-# https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2FTToBLNu*13TeV*%2FSpring*PU20bx25*%2F*AODSIM
-#TToBLNu     = []
-# https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2FSMS-T1qqqq*13TeV*%2FSpring*PU20bx25*%2F*AODSIM
-#T1qqqq       = []
-# https://cmsweb.cern.ch/das/request?view=list&limit=100&instance=prod%2Fglobal&input=dataset%3D%2FSMS-T1bbbb*13TeV*%2FSpring*PU20bx25*%2F*AODSIM
-#T1bbbb       = []
-T1tttt       = [ T1tttt_PU20bx25 ]
-
-
-#selectedComponents = [ SingleMu, DoubleElectron, TTHToWW_PUS14, DYJetsM50_PU20bx25, TTJets_PUS14 ]
 selectedComponents = []
-selectedComponents.extend( WJetsToLNu )
-selectedComponents.extend( TTbar )
+
+if cutFlow == 'Signal':
+    if puRegime == 'PU40bx50':
+        selectedComponents = WJetsToLNu + ZJetsToNuNu + TTbar + SusySignalSamples + QCD
+    elif puRegime == 'PU20bx25':
+        selectedComponents = WJetsToLNu_PU20bx25 + TTbar_PU20bx25 + SusySignalSamples_PU20bx25
+
+elif cutFlow == 'SingleMu':
+    if puRegime == 'PU40bx50':
+        selectedComponents = WJetsToLNu + TTbar + QCD
+    elif puRegime == 'PU20bx25':
+        selectedComponents = WJetsToLNu_PU20bx25 + TTbar_PU20bx25
+
+elif cutFlow == 'DoubleMu':
+    if puRegime == 'PU40bx50':
+        selectedComponents = DYJetsToLL + QCD
+    elif puRegime == 'PU20bx25':
+        selectedComponents = DYJetsToLL_PU20bx25
+
+elif cutFlow == 'SinglePhoton':
+    if puRegime == 'PU40bx50':
+        selectedComponents = GJets + QCD
+    elif puRegime == 'PU20bx25':
+        selectedComponents = GJets_PU20bx25 
+
+elif cutFlow == 'MultiJetEnriched':
+    if puRegime == 'PU40bx50':
+        selectedComponents = QCD
+    elif puRegime == 'PU20bx25':
+        selectedComponents = []
+
+elif cutFlow == 'Inclusive':
+    if puRegime == 'PU40bx50':
+        selectedComponents = WJetsToLNu + ZJetsToNuNu + TTbar + SusySignalSamples + QCD + GJets + DYJetsToLL
+    elif puRegime == 'PU20bx25':
+        selectedComponents = WJetsToLNu_PU20bx25 + TTbar_PU20bx25 + SusySignalSamples_PU20bx25 + DYJetsToLL_PU20bx25 + GJets_PU20bx25 
 
 
-
+else:
+    print 'Please choose correct cutFlow and PU regime'
+    #selectedComponents.extend( mcSamples )
 
 #-------- SEQUENCE
 
 sequence = cfg.Sequence(susyCoreSequence + [
+                        ttHPhotonSkim,
+                        ttHMuonSkim,
+                        ttHElectronSkim,
                         ttHIsoTrackAna,
+                        ttHIsoTrackSkim,
                         ttHAlphaTAna,
+                        ttHAlphaTControlAna,
+                        ttHAlphaTSkim,
+                        ttHAlphaTControlSkim,
                         treeProducer,
                         ])
 
 
 #-------- HOW TO RUN
-test = 4
+# test = 0 for batch submission
+# test = n != 0 for interactive mucking about
+
+if alphaTPSet.limitFiles:
+    for comp in selectedComponents:
+        comp.splitFactor = 2
+        comp.files = comp.files[:2]
 
 # Test a single component, using a single thread.
 #--------------------------------------------------
 if test==1:
-    comp               = TTJets_PU20bx25
+    #comp               = SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170
+    #comp = DYJetsM50_HT200to400_PU_S14_POSTLS170
+    #comp = ZJetsToNuNu_HT200to400_PU_S14_POSTLS170
+    comp = WJetsToLNu_HT400to600_PU_S14_POSTLS170
+    if cutFlow == 'SinglePhoton':
+        comp = GJets_HT600toInf_PU_S14_POSTLS170  
     #comp.files = ['/afs/cern.ch/work/p/pandolf/CMSSW_7_0_6_patch1_2/src/CMGTools/TTHAnalysis/cfg/pickevents.root']
-    comp.files         = comp.files[:2]
+    comp.files         = comp.files[:1]
     
     selectedComponents = [comp]
     comp.splitFactor   = 1
@@ -183,15 +197,18 @@ if test==1:
 # Test all components (1 thread per component).
 #--------------------------------------------------
 elif test==2:
+    selectedComponents=QCD
     for comp in selectedComponents:
-        comp.splitFactor = 1
+        comp.splitFactor = 4
         comp.files       = comp.files[:1]
 #--------------------------------------------------
+
 
 # Run on local files
 #--------------------------------------------------
 elif test==4:
-    comp = TTJets_PU20bx25
+    comp = TTbar_PU20bx25 
+
 #    comp.name = 'TTJets'
     #    comp.files = [ '/store/mc/Spring14miniaod/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_POSTLS170_V5-v1/00000/063013AD-9907-E411-8135-0026189438BD.root' ]
 
@@ -201,9 +218,12 @@ elif test==4:
     comp.splitFactor = 1
 #--------------------------------------------------
 
-
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence )
 
+if __name__ == "pycfg":
+    if not test == alphaTPSet.test or not cutFlow == alphaTPSet.cutFlow or not puRegime == alphaTPSet.puRegime:
+        sys.exit("Stop fannying about with variable names")
+
 printComps(config.components, True)
-        
+
