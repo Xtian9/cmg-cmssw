@@ -12,6 +12,11 @@ class treeProducerSusyFullHad( treeProducerSusyCore ):
         self.globalVariables += [
 
             ##--------------------------------------------------
+            ## Generator information
+            ##--------------------------------------------------
+            NTupleVariable("genQScale", lambda ev : ev.genQScale, help="Generator level binning quantity, QScale"),
+
+            ##--------------------------------------------------
             ## energy sums
             ##--------------------------------------------------
             NTupleVariable("ht", lambda ev : ev.htJet40j10l, help="H_{T} computed from jets (with |eta|<2.5, pt > 40 GeV) and leptons (electrons and muons with |eta|<2.5, pt > 10 GeV)"),
@@ -112,6 +117,7 @@ class treeProducerSusyFullHad( treeProducerSusyCore ):
             })
         self.collections.update({
             # put more here
+            "gennus"         : NTupleCollection("genNu",     genParticleWithSourceType, 10, help="Generated neutrinos (nue/numu/nutau) from W/Z decays"),
             "selectedLeptons" : NTupleCollection("lep", leptonTypeSusy, 50, help="Leptons after the preselection", filter=lambda l : l.pt()>10 ),
             "selectedTaus"    : NTupleCollection("tau", tauTypeSusy, 50, help="Taus after the preselection"),
             "cleanJetsAll"       : NTupleCollection("jet",     jetTypeSusy, 100, help="all jets (w/ x-cleaning, w/ ID applied w/o PUID applied pt>10 |eta|<5.2) , sorted by pt", filter=lambda l : l.pt()>10  ),
