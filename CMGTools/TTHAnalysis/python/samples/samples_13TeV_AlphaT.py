@@ -8,6 +8,38 @@ kreator = ComponentCreator()
 
 #AlphaT sample (see https://twiki.cern.ch/twiki/bin/viewauth/CMS/AlphaT#MC_samples_for_CSA14_exercise)
 
+### ----> RA1 2012 triggers
+
+triggers_RA1_Bulk = [
+    "HLT_HT200_v*",
+    "HLT_HT250_v*",
+    "HLT_HT300_v*",
+    "HLT_HT350_v*",
+    "HLT_HT450_v*",
+    "HLT_HT550_v*",
+    "HLT_HT650_v*",
+    "HLT_HT750_v*",
+    ]
+triggers_RA1_Parked = [
+    "HLT_HT200_AlphaT0p57_v*",
+    "HLT_HT300_AlphaT0p53_v*",
+    "HLT_HT350_AlphaT0p52_v*",
+    "HLT_HT400_AlphaT0p51_v*",
+    ]
+triggers_RA1_Prompt = [
+    "HLT_HT250_AlphaT0p55_v*",
+    "HLT_HT300_AlphaT0p53_v*",
+    "HLT_HT350_AlphaT0p52_v*",
+    "HLT_HT400_AlphaT0p51_v*",
+    "HLT_HT350_AlphaT0p52_v*",
+    ]
+triggers_RA1_Single_Mu = ["HLT_IsoMu24_eta2p1_v*"]
+triggers_RA1_Photon    = ["HLT_Photon150_v%d"%i for i in range(1,20)] + ["HLT_Photon160_v%d"%i for i in range(1,20)]
+triggers_RA1_Muon      = ["HLT_IsoMu24_eta2p1_v%d"%i for i in range(1,20)]
+
+
+
+
 #========================================================PU20bx25 ===================================================
 
 
@@ -190,7 +222,7 @@ from CMGTools.TTHAnalysis.setup.Efficiencies import *
 for comp in mcSamples:
     comp.isMC = True
     comp.isData = False
-    comp.splitFactor = 100 #  if comp.name in [ "WJets", "DY3JetsM50", "DY4JetsM50","W1Jets","W2Jets","W3Jets","W4Jets","TTJetsHad" ] else 100
+    comp.splitFactor = 10 #  if comp.name in [ "WJets", "DY3JetsM50", "DY4JetsM50","W1Jets","W2Jets","W3Jets","W4Jets","TTJetsHad" ] else 100
     comp.puFileMC=dataDir+"/puProfile_Summer12_53X.root"
     comp.puFileData=dataDir+"/puProfile_Data12.root"
     comp.efficiency = eff2012

@@ -102,6 +102,25 @@ echo
 
    return script
 
+def batchScriptIC(jobDir):
+   '''prepare a IC version of the batch script'''
+
+
+   cmssw_release = os.environ['CMSSW_BASE']
+   script = """#!/bin/bash
+source /vols/cms/grid/setup.sh
+cd {jobdir}
+cd {cmssw}/src
+eval `scramv1 ru -sh`
+cd -
+echo 'running'
+python {cmssw}/src/CMGTools/RootTools/python/fwlite/Looper.py config.pck
+echo
+echo 'sending the job directory back'
+mv Loop/* ./
+""".format(jobdir = jobDir,cmssw = cmssw_release)
+   return script
+
 
 def batchScriptPSI( jobDir, remoteDir=''):
    '''prepare the SGE version of the batch script, to run on the PSI tier3 batch system'''
@@ -210,15 +229,11 @@ mv Loop/* ./
 """ 
    return script
 
-
-
 class MyBatchManager( BatchManager ):
    '''Batch manager specific to cmsRun processes.''' 
          
    def PrepareJobUser(self, jobDir, value ):
        '''Prepare one job. This function is called by the base class.'''
-       print value
-       print components[value]
 
        #prepare the batch script
        scriptFileName = jobDir+'/batchScript.sh'
@@ -229,6 +244,8 @@ class MyBatchManager( BatchManager ):
            scriptFile.write( batchScriptCERN (jobDir, storeDir) )
        elif mode == 'PSI':
            scriptFile.write( batchScriptPSI  (jobDir, storeDir) )
+       elif mode == 'IC':
+           scriptFile.write( batchScriptIC(jobDir) )
        elif mode == 'LOCAL':
            scriptFile.write( batchScriptLocal( storeDir, value) )  # watch out arguments are swapped (although not used)
        scriptFile.close()
