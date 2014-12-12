@@ -41,7 +41,7 @@ class ttHJetAnalyzer( Analyzer ):
         self.jetGammaDR = self.cfg_ana.jetGammaDR  if hasattr(self.cfg_ana, 'jetGammaDR') else 0.4
         self.gammaPtMin = self.cfg_ana.minGammaPt  if hasattr(self.cfg_ana, 'minGammaPt') else -1
         self.gammaEtaCentral = self.cfg_ana.gammaEtaCentral  if hasattr(self.cfg_ana, 'gammaEtaCentral') else 0
-        self.qglcalc = QGLikelihoodCalculator("/afs/cern.ch/user/t/tomc/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root")
+        self.qglcalc = QGLikelihoodCalculator("/vols/cms02/lucienlo/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root")
 
 
     def declareHandles(self):
