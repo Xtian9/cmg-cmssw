@@ -9,15 +9,15 @@ alphaTPSet = cfg.CFG(
 puRegime = 'PU40bx50',
 #puRegime = 'PU20bx25',
 #cutFlow = 'MultiJetEnriched',
-#cutFlow = 'Signal',
+cutFlow = 'Signal',
 #cutFlow = 'SingleMu',
-cutFlow = 'DoubleMu',
+#cutFlow = 'DoubleMu',
 #cutFlow = 'SinglePhoton',
 #cutFlow = 'SingleEle',
 #cutFlow = 'DoubleEle',
 #cutFlow = 'Test',
 test =  0,
-limitFiles = True,
+limitFiles = False,
 )
 
 

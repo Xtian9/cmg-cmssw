@@ -197,9 +197,9 @@ if test==1:
 # Test all components (1 thread per component).
 #--------------------------------------------------
 elif test==2:
-    selectedComponents=QCD
+    selectedComponents= TTbar
     for comp in selectedComponents:
-        comp.splitFactor = 4
+        comp.splitFactor = 1
         comp.files       = comp.files[:1]
 #--------------------------------------------------
 
