@@ -222,7 +222,7 @@ from CMGTools.TTHAnalysis.setup.Efficiencies import *
 for comp in mcSamples:
     comp.isMC = True
     comp.isData = False
-    comp.splitFactor = 10 #  if comp.name in [ "WJets", "DY3JetsM50", "DY4JetsM50","W1Jets","W2Jets","W3Jets","W4Jets","TTJetsHad" ] else 100
+    comp.splitFactor = 100 #  if comp.name in [ "WJets", "DY3JetsM50", "DY4JetsM50","W1Jets","W2Jets","W3Jets","W4Jets","TTJetsHad" ] else 100
     comp.puFileMC=dataDir+"/puProfile_Summer12_53X.root"
     comp.puFileData=dataDir+"/puProfile_Data12.root"
     comp.efficiency = eff2012
