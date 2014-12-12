@@ -1,1 +1,2 @@
 /afs/cern.ch/cms/caf/python to /vols/cms02/ace09/public/alphat/cmgtools/dependencies/caf/python 
+/afs/cern.ch/user/t/tomc/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root to /vols/cms02/lucienlo/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root
