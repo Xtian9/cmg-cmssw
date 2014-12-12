@@ -236,7 +236,7 @@ class BatchManager:
 
     def RunningMode(self, batch):
 
-        '''Return "LXPUS", "PSI", "NAF", "IC" "LOCAL", or None,
+        '''Return "LXPUS", "PSI", "NAF", "IC", "LOCAL", or None,
 
         "LXPLUS" : batch command is bsub, and logged on lxplus
         "PSI"    : batch command is qsub, and logged to t3uiXX
