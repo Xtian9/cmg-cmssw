@@ -10,53 +10,62 @@ from CMGTools.RootTools.RootTools import *
 #Load all analyzers
 from CMGTools.TTHAnalysis.analyzers.susyCore_modules_cff import * 
 
-# Redefine what I need
+ttHLepAna.loose_muon_pt  = 5
+ttHLepAna.loose_muon_relIso = 0.4
+ttHLepAna.mu_isoCorr = "deltaBeta" 
+#ttHLepAna.loose_muon_absIso5= 10
+ttHLepAna.loose_electron_pt  = 7
+ttHLepAna.loose_electron_relIso = 0.4
+#ttHLepAna.loose_electron_absIso = 10
+ttHLepAna.ele_isoCorr = "rhoArea"
+
+
+
 
 # --- LEPTON SKIMMING ---
-ttHLepSkim.minLeptons = 2
+ttHLepSkim.minLeptons = 1
 ttHLepSkim.maxLeptons = 999
-#ttHLepSkim.idCut  = ""
-#ttHLepSkim.ptCuts = []
+
+# --- JET-LEPTON CLEANING ---
+ttHJetAna.minLepPt        = 10
 
 
-# Event Analyzer for susy multi-lepton (at the moment, it's the TTH one)
+# Event Analyzer for susy multi-lepton (at the moment, it's the TTH one) // Do we need had W and Top?
 ttHEventAna = cfg.Analyzer(
     'ttHLepEventAnalyzer',
     minJets25 = 0,
     )
 
-# Insert the SV analyzer in the sequence
-susyCoreSequence.insert(susyCoreSequence.index(ttHCoreEventAna), 
-                        ttHFatJetAna)
+
+ttHIsoTrackAna.setOff=False
+
 susyCoreSequence.insert(susyCoreSequence.index(ttHCoreEventAna), 
                         ttHSVAnalyzer)
 susyCoreSequence.insert(susyCoreSequence.index(ttHCoreEventAna), 
                         ttHHeavyFlavourHadronAnalyzer)
 
 
-from CMGTools.TTHAnalysis.samples.samples_8TeV_v517 import triggers_mumu, triggers_ee, triggers_mue, triggers_1mu
+from CMGTools.TTHAnalysis.samples.samples_8TeV_v517 import triggers_1mu, triggers_1muHT, triggers_1eleHT # need to update the trigger MET pr HTMET?
+
 # Tree Producer
 treeProducer = cfg.Analyzer(
-    'treeProducerSusyMultilepton',
+    'treeProducerSusySingleSoftLepton',
     vectorTree = True,
     saveTLorentzVectors = False,  # can set to True to get also the TLorentzVectors, but trees will be bigger
     PDFWeights = PDFWeights,
-    triggerBits = {
-            'SingleMu' : triggers_1mu,
-            'DoubleMu' : triggers_mumu,
-            'DoubleEl' : [ t for t in triggers_ee if "Ele15_Ele8_Ele5" not in t ],
-            'TripleEl' : [ t for t in triggers_ee if "Ele15_Ele8_Ele5"     in t ],
-            'MuEG'     : [ t for t in triggers_mue if "Mu" in t and "Ele" in t ]
-        }
+    triggerBits = { }
+    #        'MuHT' : triggers_1muHT,
+    #        'eleHT' : triggers_1eleHT
+     #   }
     )
 
 
 #-------- SAMPLES AND TRIGGERS -----------
+from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import *
+selectedComponents = [ SingleMu, DoubleElectron, TTHToWW_PUS14, DYJetsToLL_M50_PU20bx25, TTJets_PUS14 ]
+
 
 #-------- SEQUENCE
-from CMGTools.TTHAnalysis.samples.samples_13TeV_CSA14 import * 
-
-selectedComponents = [ SingleMu, DoubleElectron, TTHToWW_PUS14, DYJetsToLL_M50_PU20bx25, TTJets_PUS14 ]
 
 sequence = cfg.Sequence(susyCoreSequence+[
     ttHEventAna,
@@ -68,16 +77,16 @@ sequence = cfg.Sequence(susyCoreSequence+[
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    comp = TTHToWW_PUS14
-    comp.files = comp.files[:1]
+    comp= TTJets_PUS14
+    #comp.files = ['root://eoscms//eos/cms/store/cmst3/group/susy/alobanov/MC/MiniAOD/13TeV_Gl_Gl_4q_Gl1400_LSP300_Chi315_MiniAOD.root']
+#    comp.files = comp.files[:1]
     selectedComponents = [comp]
     comp.splitFactor = 1
 elif test==2:    
     # test all components (1 thread per component).
     for comp in selectedComponents:
-        comp.splitFactor = 1
-        comp.files = comp.files[:1]
-
+        comp.splitFactor = len(comp.files)
+ #       comp.files = comp.files[:1]
 
 
 config = cfg.Config( components = selectedComponents,
