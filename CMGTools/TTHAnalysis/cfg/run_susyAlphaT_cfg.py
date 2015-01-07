@@ -181,10 +181,10 @@ if alphaTPSet.limitFiles:
 # Test a single component, using a single thread.
 #--------------------------------------------------
 if test==1:
-    #comp               = SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170
+    comp               = SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170
     #comp = DYJetsM50_HT200to400_PU_S14_POSTLS170
     #comp = ZJetsToNuNu_HT200to400_PU_S14_POSTLS170
-    comp = WJetsToLNu_HT400to600_PU_S14_POSTLS170
+    #comp = WJetsToLNu_HT400to600_PU_S14_POSTLS170
     if cutFlow == 'SinglePhoton':
         comp = GJets_HT600toInf_PU_S14_POSTLS170  
     #comp.files = ['/afs/cern.ch/work/p/pandolf/CMSSW_7_0_6_patch1_2/src/CMGTools/TTHAnalysis/cfg/pickevents.root']
@@ -197,9 +197,9 @@ if test==1:
 # Test all components (1 thread per component).
 #--------------------------------------------------
 elif test==2:
-    selectedComponents=QCD
+    selectedComponents= TTbar
     for comp in selectedComponents:
-        comp.splitFactor = 4
+        comp.splitFactor = 1
         comp.files       = comp.files[:1]
 #--------------------------------------------------
 
