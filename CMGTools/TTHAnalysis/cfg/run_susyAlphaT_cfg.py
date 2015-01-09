@@ -159,7 +159,7 @@ sequence = cfg.Sequence(susyCoreSequence + [
                         ttHPhotonSkim,
                         ttHMuonSkim,
                         ttHElectronSkim,
-                        ttHIsoTrackAna,
+                        #ttHIsoTrackAna, #now done in susy core
                         ttHIsoTrackSkim,
                         ttHAlphaTAna,
                         ttHAlphaTControlAna,

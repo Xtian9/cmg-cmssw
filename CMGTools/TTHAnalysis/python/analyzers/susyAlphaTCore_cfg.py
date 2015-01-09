@@ -67,26 +67,22 @@ ttHMetAna.doMetNoMu = True
 ##  ISOLATED TRACK
 ##------------------------------------------
 
-# those are the cuts for the nonEMu
-ttHIsoTrackAna = cfg.Analyzer(
-            'ttHIsoTrackAnalyzer',
-#            candidates='cmgCandidates',
-#            candidatesTypes='std::vector<cmg::Candidate>',
-            candidates      ='packedPFCandidates',
-            candidatesTypes ='std::vector<pat::PackedCandidate>',
-            ptMin           = 10, ### for pion 
-            ptMinEMU        = 10, ### for EMU
-            dzMax           = 0.05,
-            #####
-            isoDR           = 0.3,
-            ptPartMin       = 0,
-            dzPartMax       = 0.1,
-            maxAbsIso       = 8,
-            #####
-            MaxIsoSum       = 0.1, ### unused
-            MaxIsoSumEMU    = 0.2, ### unused
-            doSecondVeto    = False,
-            )
+
+ttHIsoTrackAna.setOff = False
+ttHIsoTrackAna.candidates      ='packedPFCandidates'
+ttHIsoTrackAna.candidatesTypes ='std::vector<pat::PackedCandidate>'
+ttHIsoTrackAna.ptMin           = 10 ### for pion 
+ttHIsoTrackAna.ptMinEMU        = 10 ### for EMU
+ttHIsoTrackAna.dzMax           = 0.05
+#####
+ttHIsoTrackAna.isoDR           = 0.3
+ttHIsoTrackAna.ptPartMin       = 0
+ttHIsoTrackAna.dzPartMax       = 0.1
+ttHIsoTrackAna.maxAbsIso       = 8
+#####
+ttHIsoTrackAna.MaxIsoSum       = 0.1 ### unused
+ttHIsoTrackAna.MaxIsoSumEMU    = 0.2 ### unused
+ttHIsoTrackAna.doSecondVeto    = False
 
 
 ##------------------------------------------

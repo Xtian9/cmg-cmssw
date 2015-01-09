@@ -1,5 +1,6 @@
 import random
 import math
+import os
 from CMGTools.RootTools.fwlite.Analyzer import Analyzer
 from CMGTools.RootTools.fwlite.AutoHandle import AutoHandle
 from CMGTools.RootTools.physicsobjects.PhysicsObjects import Jet
@@ -41,8 +42,16 @@ class ttHJetAnalyzer( Analyzer ):
         self.jetGammaDR = self.cfg_ana.jetGammaDR  if hasattr(self.cfg_ana, 'jetGammaDR') else 0.4
         self.gammaPtMin = self.cfg_ana.minGammaPt  if hasattr(self.cfg_ana, 'minGammaPt') else -1
         self.gammaEtaCentral = self.cfg_ana.gammaEtaCentral  if hasattr(self.cfg_ana, 'gammaEtaCentral') else 0
-        self.qglcalc = QGLikelihoodCalculator("/vols/cms02/lucienlo/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root")
 
+        #check where we are to import correct name
+        host = os.environ.get('HOSTNAME')
+        imperial = "ic.ac.uk"
+        cern = "cern.ch"
+                    
+        if imperial in host:
+            self.qglcalc = QGLikelihoodCalculator("/vols/cms02/lucienlo/public/QG_pdfs_13TeV_2014-10-12/pdfQG_AK4chs_antib_NoQC_13TeV.root")
+        else:
+            self.qglcalc = QGLikelihoodCalculator("/afs/cern.ch/work/a/aelwood/alphat/cmgtools/files/pdfQG_AK4chs_antib_NoQC_13TeV.root")
 
     def declareHandles(self):
         super(ttHJetAnalyzer, self).declareHandles()

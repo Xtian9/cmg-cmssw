@@ -168,7 +168,7 @@ ttHTauMCAna = cfg.Analyzer(
 # those are the cuts for the nonEMu                                                                                                                                                                         
 ttHIsoTrackAna = cfg.Analyzer(
             'ttHIsoTrackAnalyzer',
-            setOff=True,
+            setOff=False,
             #####
             candidates='packedPFCandidates',
             candidatesTypes='std::vector<pat::PackedCandidate>',
